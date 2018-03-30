@@ -1,32 +1,12 @@
-#ifndef BSTREE_H
-#define BSTREE_H
-#include <stdio.h>
-#include <string.h>
-
-struct bstree{
-	int data;
-	struct bstree *left;
-	struct bstree *right;
-	struct bstree *parent;
-	char key[25];
-};
-
-struct bstree *bstree_create(char *key, int value);
-void bstree_add(struct bstree *tree, char *key, int value);
-struct bstree *bstree_lookup(struct bstree *tree, char *key);
-struct bstree *bstree_min(struct bstree *tree);
-struct bstree *bstree_max(struct bstree *tree);
-
-#endif
-
 #include "bstree.h"
 
-struct bstree *bstree_create(char *key, int value)
+bstree *bstree_create(char *key, int value)
 {
-	static struct bstree create;
+	static bstree create;
 
 	create.data = value;
-	strcpy(create.key, key);
+	for (int i = 0; i < 25; i++)
+		create.key[i] = key[i];
 
 	create.parent = NULL;
 	create.left = NULL;
@@ -35,10 +15,11 @@ struct bstree *bstree_create(char *key, int value)
 	return &create;
 }
 
-void bstree_add(struct bstree *tree, char *key, int value)
+
+void bstree_add(bstree *tree, char *key, int value)
 {
-	struct bstree *child = bstree_create(key, value);
-	struct bstree *node = tree;
+	bstree *child = bstree_create(key, value);
+	bstree *node = tree;
 
 	int cmp;
 	while(1)
@@ -60,4 +41,41 @@ void bstree_add(struct bstree *tree, char *key, int value)
 		node = node->right;
 		}
 	}
+}
+
+bstree *bstree_lookup(bstree *tree, const char *key)
+{
+    while(1){
+        if(strcmp(key, tree->key) < 0){
+            if(tree->left != NULL){
+                tree = tree->left;
+            } else {
+                return NULL;
+            }
+        } else if (strcmp(key, tree->key) > 0){
+            if(tree->right != NULL){
+                tree = tree->right;
+            } else {
+                return NULL;
+            }
+        } else {
+            return tree;
+        }
+    }
+}
+
+bstree *bstree_min(bstree *tree)
+{
+	if (tree->left != NULL){
+		tree = bstree_min(tree->left);
+	}
+	return tree;
+}
+
+bstree *bstree_max(bstree *tree)
+{
+	if (tree->right != NULL){
+		tree = bstree_max(tree->right);
+	}
+	return tree;
 }
