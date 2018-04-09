@@ -1,4 +1,4 @@
-all: prog
+all: prog run
 
 prog: bstree.o main.o
 	gcc bstree.o main.o -o prog.test
@@ -8,3 +8,5 @@ main.o: main.c
 	gcc -c main.c
 clean:
 	rm *.o
+run:
+	./prog.test
