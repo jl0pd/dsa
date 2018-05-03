@@ -1,4 +1,4 @@
-all: prog run
+all: prog
 
 prog: bstree.o main.o
 	gcc bstree.o main.o -o prog.test

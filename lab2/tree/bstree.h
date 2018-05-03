@@ -1,14 +1,14 @@
 #ifndef BSTREE_H
 #define BSTREE_H
-#include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 typedef struct bstree{
 	int data;
 	struct bstree *left;
 	struct bstree *right;
 	struct bstree *parent;
-	char key[25];
+	char *key;
 }bstree;
 
 bstree *bstree_create(char *key, int value);
