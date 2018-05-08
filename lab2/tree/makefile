@@ -1,11 +1,11 @@
 all: prog
 
 prog: bstree.o main.o
-	gcc bstree.o main.o -o prog.test
+	gcc -g bstree.o main.o -o prog.test
 bstree.o: bstree.c
-	gcc -c bstree.c
+	gcc -g -c bstree.c
 main.o: main.c
-	gcc -c main.c
+	gcc -g -c main.c
 clean:
 	rm *.o
 run:

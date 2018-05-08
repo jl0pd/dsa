@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SIZE 50000
+#define SIZE 10000
 
 struct listnode {
 	char *key;

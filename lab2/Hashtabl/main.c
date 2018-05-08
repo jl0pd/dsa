@@ -4,7 +4,7 @@
 int main (void)
 {
 	int i;
-	struct listnode *node;
+	// struct listnode *node;
 	srand (time(NULL));
 	double start, stop;
 	
@@ -13,37 +13,42 @@ int main (void)
 
 	hashtab_init(hashtab); // Инициализация самой таблицы.
 	
-	FILE *file = fopen("dictionary.txt", "r");	
+	FILE *file = fopen("input.txt", "r");
+	if (file == NULL) return 0;
 
 	char words[SIZE][40];
+
+	start = clock();
 	for (i = 0; i < SIZE; i++) {
 		fscanf(file, "%s", words[i]);
 		hashtab_add(hashtab, words[i], i);
 	}
-	fclose(file);
-	//printf("COLIZE: [%d]\n", amount);
+	stop = clock();
+	printf("adding time: %.10fsec\n", difftime(stop, start) / CLOCKS_PER_SEC);
 
-		
+	fclose(file);
+
 	//LOOKUP
 	
 	start = clock();
 	
-	node = hashtab_lookup(hashtab, "вырезалась");
-	printf("Node: %s, %d\n", node->key, node->value+1);
+	char *randkey;
+	double loctime = 0;
 
-	stop = clock();
-	printf("Time: %.10fsec\n", (stop - start) / CLOCKS_PER_SEC);
+	for (int i = 0; i < SIZE - 1; i++){
+		randkey = words[rand() % (SIZE - 0 + 1) + 0];
 
-	//DELETE
+		hashtab_lookup(hashtab, randkey);
+		// node = hashtab_lookup(hashtab, randkey);
+		// printf("Node: %s, %d\n", node->key, node->value+1);
 
-	/*hashtab_delete(hashtab, "adieux"); // удаление.
+		stop = clock();
 
-	node = hashtab_lookup(hashtab, "adieux"); // Проверка (можно удалить).
-	if (node != NULL) {
-		printf("Node: %s, %d\n", node->key, node->value);
-	} else {
-		printf("Успешное удаление.\n");
-	}*/
+		loctime += difftime(stop, start);
+	}
+
+	printf("average time of %d: %.10fsec\n", SIZE, (loctime / SIZE) / CLOCKS_PER_SEC);
+
 	printf("COLIZE: [%d]\n", SIZE - amount);
 	return 0;
 }

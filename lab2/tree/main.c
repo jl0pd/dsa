@@ -21,7 +21,7 @@ int main()
     // }
 
     double start = clock();
-    FILE *text = fopen("input.txt", "r");
+    FILE *text = fopen("aver_way.txt", "r");
     for (int i = 0; i < WORD_COUNT; i++) {
         fscanf(text, "%s", buffer[i]);
         // puts(buffer[i]);
@@ -43,27 +43,33 @@ int main()
         bstree_add(tree, buffer[i], i);
     }
     end = clock();
-    time = difftime(end, start) / 1000000;
+    time = difftime(end, start) / CLOCKS_PER_SEC;
     printf("adding time:\t\t%0.10f\n", time);
      
     start = clock();
     bstree *min    = bstree_min(tree);
     end = clock();
-    time = difftime(end, start) / 1000000;
+    time = difftime(end, start) / CLOCKS_PER_SEC;
     printf("min_search time:\t%0.10f\n", time);
     
     start = clock();
     bstree *max    = bstree_max(tree);
     end = clock();
-    time = difftime(end, start) / 1000000;
+    time = difftime(end, start) / CLOCKS_PER_SEC;
     printf("max_search time:\t%0.10f\n", time);
 
-    start = clock();  
-    bstree *search = bstree_lookup(tree, buffer[rand()%WORD_COUNT]);
-    end = clock();
-    time = difftime(end, start) / 1000000;
-    printf("key_search time:\t%0.10f\n", time);
-    
+
+    double loctime = 0;
+    for (int i = 0; i < 10000; i++){
+        start = clock();
+        bstree *search = bstree_lookup(tree, buffer[rand()%WORD_COUNT]);
+        end = clock();
+        loctime += difftime(end, start);
+    }
+
+    time = loctime / CLOCKS_PER_SEC /10000;
+    printf("key_search average of %d, time:\t%0.10f\n", 10000, time);
+
     // puts(min->key);
     // puts(max->key);
     // puts(search->key);
