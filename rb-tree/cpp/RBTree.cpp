@@ -270,16 +270,13 @@ public:
         this->nullNode = new Node(
             0, this->color::black, std::string(""), NULL, NULL, NULL
         );
+
+        // this->nullNode->parent = this->nullNode->left = this->nullNode->right = this->nullNode;
     }
 
-    RBTree(std::vector<int> array)
+    RBTree(std::vector<int> array) : RBTree()
     {
-        this->root = new Node();
-        this->nullNode = new Node(
-            0, this->color::black, std::string(""), NULL, NULL, NULL
-        );
- 
-        for(const int &adding : array)
+        for(int adding : array)
         {
             this->add(adding, std::to_string(adding));
         }
@@ -321,87 +318,12 @@ public:
         delete this->nullNode;
     }
 
-    void del(int key)
-    {
-        if (this->root != NULL && this->root != this->nullNode) 
-        {
-            Node head = this->root; /* временный указатель на корень дерева */
-            Node *q, *p, *g; /* вспомогательные переменные */
-            Node *f = NULL;  /* узел, подлежащий удалению */
-            int dir = 1;
-        
-            /* инициализация вспомогательных переменных */
-            q = &head;
-            g = p = NULL;
-            q->link[1] = tree->root;
-        
-            /* поиск и удаление */
-            while ( q->link[dir] != NULL ) {
-            int last = dir;
-        
-            /* сохранение иерархии узлов во временные переменные */
-            g = p, p = q;
-            q = q->link[dir];
-            dir = q->data < data;
-        
-            /* сохранение найденного узла */
-            if ( q->data == data )
-                f = q;
-        
-            if ( !is_red ( q ) && !is_red ( q->link[dir] ) ) {
-                if ( is_red ( q->link[!dir] ) )
-                p = p->link[last] = rb_single ( q, dir );
-                else if ( !is_red ( q->link[!dir] ) ) {
-                struct rb_node *s = p->link[!last];
-        
-        
-                if ( s != NULL ) {
-                    if ( !is_red ( s->link[!last] ) && !is_red ( s->link[last] ) ) {
-                    /* смена цвета узлов */
-                    p->red = 0;
-                    s->red = 1;
-                    q->red = 1;
-                    }
-                    else {
-                    int dir2 = g->link[1] == p;
-        
-                    if ( is_red ( s->link[last] ) )
-                        g->link[dir2] = rb_double ( p, last );
-                    else if ( is_red ( s->link[!last] ) )
-                        g->link[dir2] = rb_single ( p, last );
-        
-                    /* корректировка цвета узлов */
-                    q->red = g->link[dir2]->red = 1;
-                    g->link[dir2]->link[0]->red = 0;
-                    g->link[dir2]->link[1]->red = 0;
-                    }
-                }
-                }
-            }
-            }
-        
-            /* удаление найденного узла */
-            if ( f != NULL ) {
-            f->data = q->data;
-            p->link[p->link[1] == q] =
-                q->link[q->link[0] == NULL];
-            free ( q );
-            }
-        
-            /* обновление указателя на корень дерева */
-            tree->root = head.link[1];
-            if ( tree->root != NULL )
-            tree->root->red = 0;
-        }
-    }
-
     void add(int key, std::string value)
     {
-        // Node *node = this->root;
-        Node *node;
+        Node *node = this->root;
         Node *parent = this->nullNode;
 
-        for (node = this->root; node != this->nullNode && node != NULL; )
+        while (node != this->nullNode && node != NULL)
         {
             parent = node;
             if (key < node->key)
