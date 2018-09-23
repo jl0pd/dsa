@@ -28,14 +28,21 @@ int main(int argc, char **argv)
 {
     rbtree *tree = NULL;
 
-    tree = rbtree_add(tree, 10, "10");
-    tree = rbtree_add(tree, 5, "5");
-    tree = rbtree_add(tree, 3, "3");
-    tree = rbtree_add(tree, 11, "11");
-    tree = rbtree_add(tree, 12, "12");
-    tree = rbtree_add(tree, 6, "6");
-    tree = rbtree_add(tree, 8, "8");
-    tree = rbtree_add(tree, 9, "9");
+    char cache[15][10];
+    for (int i = 1; i < 10; i++)
+    {
+        sprintf(cache[i], "%d", i);
+        tree = rbtree_add(tree, i, cache[i]);
+    }
+
+    // tree = rbtree_add(tree, 10, "10");
+    // tree = rbtree_add(tree, 5, "5");
+    // tree = rbtree_add(tree, 3, "3");
+    // tree = rbtree_add(tree, 11, "11");
+    // tree = rbtree_add(tree, 12, "12");
+    // tree = rbtree_add(tree, 6, "6");
+    // tree = rbtree_add(tree, 8, "8");
+    // tree = rbtree_add(tree, 9, "9");
 
     rbtree_print(tree);
     // rbtree_free(tree);           
@@ -65,22 +72,20 @@ void print_struct(rbtree *one_node)
 
 void rbtree_print(rbtree *root)
 {
-    print_struct(root);
-
-    while(root->left != NullNode)
+    if (root->value[0])
     {
-        root = root->left;
         print_struct(root);
+        rbtree_print(root->left);
+        rbtree_print(root->right);
     }
 }
 #undef RED
 #undef BLACK
 #undef DEFAULT
 
-
 rbtree * rbtree_add(rbtree *root, int key, char *value)
 {
-    rbtree *node, *parent =  NullNode;
+    rbtree *node, *parent = NullNode;
     /* Search leaf for new element */ 
     for (node = root; node != NullNode && node != NULL; ) 
     { 
