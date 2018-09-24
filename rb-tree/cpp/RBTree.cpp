@@ -244,17 +244,17 @@ private:
         }
     }
 
-    std::string search(Node *node, int key)
+    std::string lookup(Node *node, int key)
     {
         if (node->key != key)
         {
             if (key > node->key)
             {
-                this->search(node->right, key);
+                this->lookup(node->right, key);
             }
             else
             {
-                this->search(node->left, key);
+                this->lookup(node->left, key);
             }
         }
         else
@@ -287,17 +287,17 @@ public:
         this->clear();
     }
 
-    std::string search(int key)
+    std::string lookup(int key)
     {
         if (this->root->key != key)
         {
             if (key > this->root->key)
             {
-                this->search(this->root->right, key);
+                this->lookup(this->root->right, key);
             }
             else
             {
-                this->search(this->root->left, key);
+                this->lookup(this->root->left, key);
             }
         }
         else
@@ -374,6 +374,26 @@ public:
             this->print(this->root->left);
             this->print(this->root->right);
         }
+    }
+
+    std::string min()
+    {
+        Node *tmp = this->root;
+        while(tmp->left != this->nullNode)
+        {
+            tmp = tmp->left;
+        }
+        return tmp->value;
+    }
+
+    std::string max()
+    {
+        Node *tmp = this->root;
+        while(tmp->right != this->nullNode)
+        {
+            tmp = tmp->right;
+        }
+        return tmp->value;
     }
 
 };
