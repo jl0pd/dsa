@@ -18,13 +18,26 @@ int main(int argc, char **argv)
         arr.push_back(rand() % 100);
     }
 
-    double start = clock();
-    RBTree *my_tree = new RBTree(arr);
-    double end = clock();
 
-    printf("%lf seconds\n", (end - start)/CLOCKS_PER_SEC);
+    double diff = 0;
 
-    delete my_tree;
+    std::vector<RBTree *> trees;
+    for(int i = 0; i < 200; i++)
+    {
+        double start = clock();
+        trees.push_back(new RBTree(arr));
+        double end = clock();
+        diff += end - start;
+    }
+    
+    printf("%lf seconds\n", (diff/200)/CLOCKS_PER_SEC);
+
+    for(auto tree : trees)
+    {
+        delete tree;
+    }
+
+    trees.clear();
 
     exit(EXIT_SUCCESS);
 }
