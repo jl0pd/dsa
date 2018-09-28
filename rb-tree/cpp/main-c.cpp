@@ -3,6 +3,7 @@
 #include <chrono>
 #include <string>
 #include <vector>
+#include <unistd.h>
 
 #include "RBTree.cpp"
 
@@ -11,23 +12,17 @@ int main(int argc, char **argv)
     srand(time(NULL));
 
     std::vector<int> arr;
-    for(int i = 1; i < 10; i++)
+
+    for(int i = 1; i < 50000; i++)
     {
         arr.push_back(rand() % 100);
     }
 
-    // std::vector<int> arr = {11, 2, 7, 5, 8, 1, 14, 15};
-
+    double start = clock();
     RBTree *my_tree = new RBTree(arr);
+    double end = clock();
 
-    my_tree->print();
-
-    std::cout << my_tree->min() << " <-min || max-> " << my_tree->max() << std::endl;
-
-    for(int i : arr)
-    {
-        my_tree->del(i);
-    }
+    printf("%lf seconds\n", (end - start)/CLOCKS_PER_SEC);
 
     delete my_tree;
 
