@@ -11,7 +11,8 @@ int main(int argc, char **argv)
     srand(time(NULL));
 
     std::vector<int> arr;
-    for(int i = 1; i < 10; i++){
+    for(int i = 1; i < 10; i++)
+    {
         arr.push_back(rand() % 100);
     }
 
@@ -22,6 +23,11 @@ int main(int argc, char **argv)
     my_tree->print();
 
     std::cout << my_tree->min() << " <-min || max-> " << my_tree->max() << std::endl;
+
+    for(int i : arr)
+    {
+        my_tree->del(i);
+    }
 
     delete my_tree;
 

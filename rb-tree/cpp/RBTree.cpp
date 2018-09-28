@@ -9,7 +9,8 @@ private:
     enum color
     {
         red,
-        black
+        black,
+        doubleBlack
     };
 
     struct Node
@@ -80,7 +81,6 @@ private:
     Node *nullNode;
     void add_fixup(Node *node)
     {
-        // this->print();
         Node *uncle;
         while (node != this->root && node->parent->color == this->color::red)
         {
@@ -132,7 +132,6 @@ private:
         }
 
         this->root->color = this->color::black;
-        // this->print();
     }
 
     void left_rotate(Node *node)
@@ -254,6 +253,175 @@ private:
         }
     }
 
+    Node* del_node(Node *node, int key)
+    {
+        if (node == this->nullNode)
+            return node;
+
+        if (key < node->key)
+            return del_node(node->left, key);
+
+        if (key > node->key)
+            del_node(node->right, key);
+
+        if (node->left == this->nullNode || node->right == this->nullNode)
+            return node;
+
+        Node *temp = this->get_min_node(node->right);
+        node->key = temp->key;
+
+        return del_node(node->right, temp->key);
+    }
+
+    void del_fixup(Node *node)
+    { 
+        if (node == this->nullNode)
+            return;
+
+        if (node == root) {
+            root = this->nullNode;
+            return;
+        }
+
+        if (node->color == this->color::red || node->left->color == this->color::red || node->right->color == this->color::red)
+        {
+            Node *child = node->left != this->nullNode ? node->left : node->right;
+
+            if (node == node->parent->left)
+            {
+                node->parent->left = child;
+                if (child != this->nullNode)
+                {
+                    child->parent = node->parent;
+                }
+                child->color = this->color::black;
+                delete node;
+            }
+            else
+            {
+                node->parent->right = child;
+                if (child != this->nullNode)
+                {
+                    child->parent = node->parent;
+                }
+                child->color = this->color::black;
+                delete node;
+            }
+        }
+        else
+        {
+            Node *sibling = this->nullNode;
+            Node *parent = this->nullNode;
+            Node *ptr = node;
+            ptr->color = this->color::doubleBlack;
+            while (ptr != root && ptr->color == this->color::doubleBlack) {
+                parent = ptr->parent;
+                if (ptr == parent->left)
+                {
+                    sibling = parent->right;
+                    if (sibling->color == this->color::red)
+                    {
+                        sibling->color = this->color::black;
+                        parent->color = this->color::red;
+                        this->left_rotate(parent);
+                    }
+                    else
+                    {
+                        if (sibling->left->color == this->color::black && sibling->right->color == this->color::black)
+                        {
+                            sibling->color = this->color::red;
+                            if(parent->color == this->color::red)
+                            {
+                                parent->color = this->color::black;
+                            }
+                            else
+                            {
+                                parent->color = this->color::doubleBlack;
+                            }
+                            ptr = parent;
+                        }
+                        else
+                        {
+                            if (sibling->right->color == this->color::black)
+                            {
+                                sibling->left->color = this->color::black;
+                                sibling->color = this->color::red;
+                                this->right_rotate(sibling);
+                                sibling = parent->right;
+                            }
+                            sibling->color = parent->color;
+                            parent->color = this->color::black;
+                            sibling->right->color = this->color::black;
+                            this->left_rotate(parent);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    sibling = parent->left;
+                    if (sibling->color == this->color::red)
+                    {
+                        sibling->color = this->color::black;
+                        parent->color = this->color::red;
+                        this->right_rotate(parent);
+                    }
+                    else
+                    {
+                        if (sibling->left->color == this->color::black && sibling->right->color == this->color::black)
+                        {
+                            sibling->color = this->color::red;
+                            if (parent->color == this->color::red)
+                            {
+                                parent->color = this->color::black;
+                            }
+                            else
+                            {
+                                parent->color = this->color::doubleBlack;
+                            }
+                            ptr = parent;
+                        }
+                        else
+                        {
+                            if (sibling->left->color == this->color::black)
+                            {
+                                sibling->right->color = this->color::black;
+                                sibling->color = this->color::red;
+                                this->left_rotate(sibling);
+                                sibling = parent->left;
+                            }
+                            sibling->color = parent->color;
+                            parent->color = this->color::black;
+                            sibling->left->color = this->color::black;
+                            this->right_rotate(parent);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (node == node->parent->left)
+            {
+                node->parent->left = this->nullNode;
+            }
+            else
+            {
+                node->parent->right = this->nullNode;
+            }
+            delete node;
+
+            this->root->color = this->color::black;
+        }
+    }
+
+    Node* get_min_node(Node *node)
+    {
+        while (node->left != this->nullNode)
+            node = node->left;
+
+        return node;
+    }
+
 public:
     RBTree()
     {
@@ -310,7 +478,6 @@ public:
 
     void add(int key, std::string value)
     {
-        std::cout << "key: " << key << " value: " << value << std::endl;
         Node *node = this->root;
         Node *parent = this->nullNode;
 
@@ -388,188 +555,200 @@ public:
         }
         return tmp->value;
     }
-
-
+    
     void del(int key)
     {
-        if(root==NULL)
-        {
-            return;
-        }
-
-        Node *p = this->root;
-
-        Node *y = NULL;
-        Node *node = NULL;
-
-        int found = 0;
-
-        while(p != NULL && found == 0)
-        {
-            if(p->key == key)
-            {
-                found = 1;
-            }
-
-            if(found == 0)
-            {
-                if(p->key < key)
-                    p = p->right;
-                else
-                    p = p->left;
-            }
-        }
-
-        if(found == 0)
-        {
-            throw std::exception();
-        }
-        else
-        {
-            if(p->left == NULL || p->right == NULL)
-            {
-                y = p;
-            }
-            else
-            {
-                y = successor(p);
-            }
-
-            if(y->left!=NULL)
-            {           
-                node=y->left;
-            }
-            else
-            {
-                if(y->right!=NULL)
-                { 
-                    node=y->right;
-                }
-                else
-                {
-                    node=NULL;
-                }
-            }
-            
-            if(node!=NULL)
-            {
-                node->parent=y->parent;
-            }
-
-            if(y->parent==NULL)
-            {
-                root=node;
-            }
-            else
-            {
-                if(y==y->parent->left)
-                {
-                    y->parent->left=node;
-                }
-                else
-                {
-                    y->parent->right=node;
-                }
-            }
-
-            if(y!=p)
-            {
-                p->color=y->color;
-                p->key=y->key;
-            }
-
-            if(y->color=='b')
-                delfix(node);
-        }
+        Node *node = del_node(this->root, key);
+        del_fixup(node);
     }
 
-    void delfix(Node *p)
-    {
-        node *s;
-        while(p!=root&&p->color=='b')
-        {
-            if(p->parent->left==p)
-            {
-                    s=p->parent->right;
-                    if(s->color=='r')
-                    {
-                            s->color='b';
-                            p->parent->color='r';
-                            leftrotate(p->parent);
-                            s=p->parent->right;
-                    }
-                    if(s->right->color=='b'&&s->left->color=='b')
-                    {
-                            s->color='r';
-                            p=p->parent;
-                    }
-                    else
-                    {
-                        if(s->right->color=='b')
-                        {
-                                s->left->color=='b';
-                                s->color='r';
-                                rightrotate(s);
-                                s=p->parent->right;
-                        }
-                        s->color=p->parent->color;
-                        p->parent->color='b';
-                        s->right->color='b';
-                        leftrotate(p->parent);
-                        p=root;
-                    }
-            }
-            else
-            {
-                    s=p->parent->left;
-                    if(s->color=='r')
-                    {
-                            s->color='b';
-                            p->parent->color='r';
-                            rightrotate(p->parent);
-                            s=p->parent->left;
-                    }
-                    if(s->left->color=='b'&&s->right->color=='b')
-                    {
-                            s->color='r';
-                            p=p->parent;
-                    }
-                    else
-                    {
-                            if(s->left->color=='b')
-                            {
-                                s->right->color='b';
-                                s->color='r';
-                                leftrotate(s);
-                                s=p->parent->left;
-                            }
-                            s->color=p->parent->color;
-                            p->parent->color='b';
-                            s->left->color='b';
-                            rightrotate(p->parent);
-                            p=root;
-                    }
-            }
-        p->color='b';
-        root->color='b';
-        }
-    }
-
-node* RBtree::successor(node *p)
-{
-      node *y=NULL;
-     if(p->left!=NULL)
-     {
-         y=p->left;
-         while(y->right!=NULL)
-              y=y->right;
-     }
-     else
-     {
-         y=p->right;
-         while(y->left!=NULL)
-              y=y->left;
-     }
-     return y;
-}
 };
+
+
+// class trash
+// {
+// /*
+//     void del(int key)
+//     {
+//         if(root==NULL)
+//         {
+//             return;
+//         }
+
+//         Node *p = this->root;
+
+//         Node *y = NULL;
+//         Node *node = NULL;
+
+//         int found = 0;
+
+//         while(p != NULL && found == 0)
+//         {
+//             if(p->key == key)
+//             {
+//                 found = 1;
+//             }
+
+//             if(found == 0)
+//             {
+//                 if(p->key < key)
+//                     p = p->right;
+//                 else
+//                     p = p->left;
+//             }
+//         }
+
+//         if(found == 0)
+//         {
+//             throw std::exception();
+//         }
+//         else
+//         {
+//             if(p->left == NULL || p->right == NULL)
+//             {
+//                 y = p;
+//             }
+//             else
+//             {
+//                 y = successor(p);
+//             }
+
+//             if(y->left!=NULL)
+//             {           
+//                 node=y->left;
+//             }
+//             else
+//             {
+//                 if(y->right!=NULL)
+//                 { 
+//                     node=y->right;
+//                 }
+//                 else
+//                 {
+//                     node=NULL;
+//                 }
+//             }
+            
+//             if(node!=NULL)
+//             {
+//                 node->parent=y->parent;
+//             }
+
+//             if(y->parent==NULL)
+//             {
+//                 root=node;
+//             }
+//             else
+//             {
+//                 if(y==y->parent->left)
+//                 {
+//                     y->parent->left=node;
+//                 }
+//                 else
+//                 {
+//                     y->parent->right=node;
+//                 }
+//             }
+
+//             if(y!=p)
+//             {
+//                 p->color=y->color;
+//                 p->key=y->key;
+//             }
+
+//             if(y->color=='b')
+//                 delfix(node);
+//         }
+//     }
+
+//     void delfix(Node *p)
+//     {
+//         node *s;
+//         while(p!=root&&p->color=='b')
+//         {
+//             if(p->parent->left==p)
+//             {
+//                     s=p->parent->right;
+//                     if(s->color=='r')
+//                     {
+//                             s->color='b';
+//                             p->parent->color='r';
+//                             leftrotate(p->parent);
+//                             s=p->parent->right;
+//                     }
+//                     if(s->right->color=='b'&&s->left->color=='b')
+//                     {
+//                             s->color='r';
+//                             p=p->parent;
+//                     }
+//                     else
+//                     {
+//                         if(s->right->color=='b')
+//                         {
+//                                 s->left->color=='b';
+//                                 s->color='r';
+//                                 rightrotate(s);
+//                                 s=p->parent->right;
+//                         }
+//                         s->color=p->parent->color;
+//                         p->parent->color='b';
+//                         s->right->color='b';
+//                         leftrotate(p->parent);
+//                         p=root;
+//                     }
+//             }
+//             else
+//             {
+//                     s=p->parent->left;
+//                     if(s->color=='r')
+//                     {
+//                             s->color='b';
+//                             p->parent->color='r';
+//                             rightrotate(p->parent);
+//                             s=p->parent->left;
+//                     }
+//                     if(s->left->color=='b'&&s->right->color=='b')
+//                     {
+//                             s->color='r';
+//                             p=p->parent;
+//                     }
+//                     else
+//                     {
+//                             if(s->left->color=='b')
+//                             {
+//                                 s->right->color='b';
+//                                 s->color='r';
+//                                 leftrotate(s);
+//                                 s=p->parent->left;
+//                             }
+//                             s->color=p->parent->color;
+//                             p->parent->color='b';
+//                             s->left->color='b';
+//                             rightrotate(p->parent);
+//                             p=root;
+//                     }
+//             }
+//         p->color='b';
+//         root->color='b';
+//         }
+//     }
+
+//     node* RBtree::successor(node *p)
+//     {
+//         node *y=NULL;
+//         if(p->left!=NULL)
+//         {
+//             y=p->left;
+//             while(y->right!=NULL)
+//                 y=y->right;
+//         }
+//         else
+//         {
+//             y=p->right;
+//             while(y->left!=NULL)
+//                 y=y->left;
+//         }
+//         return y;
+//     }
+// */
+// };
