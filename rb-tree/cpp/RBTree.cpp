@@ -234,6 +234,7 @@ private:
         }
     }
 
+/*
     std::string lookup(Node *node, int key)
     {
         if (node->key != key)
@@ -252,7 +253,7 @@ private:
             return node->value;
         }
     }
-
+*/
     Node* del_node(Node *node, int key)
     {
         if (node == this->nullNode)
@@ -444,7 +445,7 @@ public:
     {
         this->clear();
     }
-
+/*
     std::string lookup(int key)
     {
         if (this->root->key != key)
@@ -462,6 +463,25 @@ public:
         {
             return this->root->value;
         }
+    }
+*/
+    std::string lookup(int key)
+    {
+        Node *node = this->root;
+        while (node->key != key && node != this->nullNode)
+        {
+            if (key > node->key)
+            {
+                node = node->right;
+            }
+            // else if (key < node->key)
+            else
+            {
+                node = node->left;
+            }
+        }
+
+        return node->value;
     }
 
     void clear()
