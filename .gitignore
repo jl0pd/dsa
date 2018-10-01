@@ -1,8 +1,10 @@
-#binary files (executable)
-bin/chess
-bin/test
+# Graphs
+*.png
 
-# my file types
+# Binary files (executable)
+*.run
+
+# My file types
 *.swp
 *.test
 
