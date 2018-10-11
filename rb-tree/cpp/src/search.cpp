@@ -14,10 +14,10 @@ int main(int argc, char **argv)
     std::vector<int> arr;
 
     FILE *f = fopen("data/search.txt", "w+");
-    fprintf(f, "#\t\trand\t\t\tmin\t\t\t\tmax\n");
+    fprintf(f, "#\t\trand\t\t\tmin\t\t\t\tmax\t\t\t\tinit\n");
     fclose(f);
 
-    int iter_count = 100000;
+    int iter_count = 50000;
 
     for(int size = 100000; size <= 2000000; size+=100000)
     {
@@ -56,11 +56,12 @@ int main(int argc, char **argv)
             max_diff += end - start;
         }
 
-        fprintf(f, "%d\t%0.10f\t%0.10f\t%0.10f\n",
+        fprintf(f, "%d\t%0.10f\t%0.10f\t%0.10f\t%0.10f\n",
             size,
             (rand_diff/iter_count)/CLOCKS_PER_SEC,
             (min_diff/iter_count)/CLOCKS_PER_SEC,
-            (max_diff/iter_count)/CLOCKS_PER_SEC
+            (max_diff/iter_count)/CLOCKS_PER_SEC,
+            (tree_end - tree_st)/CLOCKS_PER_SEC
         );
 
         fclose(f);

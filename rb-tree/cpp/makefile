@@ -29,6 +29,9 @@ build/adding.o: src/adding.cpp
 build/search.o: src/search.cpp
 	g++ src/search.cpp -c -o build/search.o
 
+clean:
+	rm -r bin build data graph
+
 bin:
 	mkdir -p bin
 

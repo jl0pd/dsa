@@ -46,6 +46,7 @@ int main(int argc, char **argv)
         {
             delete tree;
         }
+        trees.clear();
     }
     
     exit(EXIT_SUCCESS);

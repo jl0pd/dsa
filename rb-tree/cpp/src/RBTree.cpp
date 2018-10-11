@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <exception>
 
 class RBTree
 {
@@ -243,7 +242,7 @@ private:
             return del_node(node->left, key);
 
         if (key > node->key)
-            del_node(node->right, key);
+            return del_node(node->right, key);
 
         if (node->left == this->nullNode || node->right == this->nullNode)
             return node;
@@ -435,7 +434,6 @@ public:
             {
                 node = node->right;
             }
-            // else if (key < node->key)
             else
             {
                 node = node->left;
