@@ -33,7 +33,8 @@ class Trie(object):
     def delete(self, key):
         tmp = self.root
         for c in key:
-            tmp = tmp[c]
+            pass
+            # tmp = tmp[c]
 
     def show(self):
         def show_branch(branch, deep):
@@ -49,7 +50,7 @@ class Trie(object):
 
     def lookup(self, key):
         tmp = self.root.childs[key[0]]
-        for c in key:
+        for c in key[1:]:
             tmp = tmp.childs[c]
 
         return tmp.value
@@ -59,5 +60,11 @@ if __name__ == "__main__":
     trie = Trie()
     trie.insert("absolute", 100)
     trie.insert("abs", 200)
-    trie.insert("abrakadabra", 100_500)
+    trie.insert("abrakadabra", 100500)
+    trie.insert("fork", 700)
+    trie.insert("for", "hi")
+    trie.insert("foreach", [1, 2, 100, 'num'])
     trie.show()
+
+    print(trie.lookup("abs"))
+    print(trie.lookup("foreach"))
