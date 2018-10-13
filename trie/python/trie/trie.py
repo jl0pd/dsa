@@ -8,7 +8,7 @@ class Trie(object):
 
     def __init__(self, key_val_dict=None):
         self.root = self.Node("")
-        if key_val_dict:
+        if key_val_dict.__class__ == dict:
             for key, value in key_val_dict.items():
                 self[key] = value
 
