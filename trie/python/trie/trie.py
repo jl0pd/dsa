@@ -1,23 +1,16 @@
 class Trie(object):
-    class Node(object):
-        __slots__ = ("sym", "value", "child")
+    class Node(dict):
+        __slots__ = ("sym", "value")
 
         def __init__(self, sym, value=None):
             self.sym = sym
             self.value = value
-            self.child = dict()
 
-        def keys(self):
-            return self.child.keys()
-
-        def __setitem__(self, key, value):
-            self.child[key] = value
-
-        def __getitem__(self, item):
-            return self.child[item]
-
-    def __init__(self):
+    def __init__(self, key_val_dict=None):
         self.root = self.Node("")
+        if key_val_dict:
+            for key, value in key_val_dict.items():
+                self[key] = value
 
     def __setitem__(self, key, value):
         self.insert(key, value)
@@ -27,10 +20,6 @@ class Trie(object):
             return self.lookup(item)
         except KeyError:
             return None
-
-    @staticmethod
-    def hi():
-        print("hi")
 
     def insert(self, key, value):
         tmp = self.root
@@ -57,8 +46,7 @@ class Trie(object):
     def show(self):
         def show_branch(branch, deep):
             if branch.value:
-                print(" " * (deep - 1), "\x1b[1A :=", branch.value)
-
+                print(f"{'|' * (deep - 1)}>> {branch.value}")
             for c in branch.keys():
                 print("|" * deep, c, sep="")
                 show_branch(branch[c], deep + 1)
@@ -76,17 +64,11 @@ class Trie(object):
 
 
 if __name__ == "__main__":
-    trie = Trie()
-    trie["absolute"] = 100
-    trie["abs"] = 200
-    trie["fork"] = 700
-    trie["abrakadabra"] = 100_500
-    trie["for"] = "hi"
-    trie["foreach"] = [1, 2, 3.14, ["Sum", "Len"]]
-    trie["forever"] = int
+    keys = ["abs", "absolute", "fork", "for", "forever", "foreach"]
+    values = [100, "200", 3.14, "hi", [int, float], keys]
+    trie = Trie(dict(zip(keys, values)))
     trie.show()
-
     print("\n\n\n\n")
 
-    for i, key in enumerate(("abs", "fork", "foreach"), 1):
-        print(f"{i}: {trie[key]}")
+    for i, key in enumerate(("abs", "fork", "foreach", "askdjalksjdlkajl"), 1):
+        print(f"{i}: {key} ==> {trie[key]}")
