@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-
+from typing import Dict
 
 class Priority_Queue(object):
-    def insert(self, key):
+    def insert(self, key, value):
         pass
 
     def delMin(self):
@@ -31,18 +31,34 @@ class Heap(object):
 class DoubleLinkedList(object):
     @dataclass
     class Node(object):
+        __slots__ = ("_parent", "_child", "_left", "_right", "_key", "_value", "_degree", "_mark")
         parent: "DoubleLinkedList.Node"
         child: "DoubleLinkedList.Node"
         left: "DoubleLinkedList.Node"
         right: "DoubleLinkedList.Node"
-        key: str = ""
+        key: int = -1# weight, key
         value: str = ""
         degree: int = 0
         mark: bool = False
+
+        def __init__(self, key=None, value=None, degree=-1):
+            if key is not None and value is not None and degree:
+                self._key = key
+                self._value = value
+                self._degree = degree
+            else:
+                self._left = self._right = self
+
 
     def __init__(self):
         pass
 
 
 class FibHeap(Heap, Priority_Queue):
-    pass
+
+    def insert(self, key, value):
+
+        node = DoubleLinkedList.Node(key, value)
+
+
+
