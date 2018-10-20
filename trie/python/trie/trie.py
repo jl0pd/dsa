@@ -6,6 +6,12 @@ class Trie(object):
             self.sym = sym
             self.value = value
 
+        def __del__(self):
+            for branch in self.values():
+                del branch
+
+    keys = []
+
     def __init__(self, key_val_dict=None):
         self.root = self.Node("")
         if key_val_dict.__class__ == dict:
@@ -21,10 +27,14 @@ class Trie(object):
         except KeyError:
             return None
 
+    def get_keys(self):
+        return self.keys
+
     def insert(self, key, value):
+        self.keys.append(key)
         tmp = self.root
         for c in key[:-1]:
-            if c in tmp.keys() or c in tmp.keys():
+            if c in tmp.keys():
                 tmp = tmp[c]
             else:
                 tmp[c] = self.Node(c)
@@ -35,13 +45,14 @@ class Trie(object):
             tmp[key[-1]] = self.Node(key[-1], value)
 
     def clear(self):
+        del self.root
         self.root = self.Node("")
 
     def delete(self, key):
         tmp = self.root
         for c in key:
-            pass
-            # tmp = tmp[c]
+            tmp = tmp[c]
+        del tmp
 
     def show(self):
         def show_branch(branch, deep):
