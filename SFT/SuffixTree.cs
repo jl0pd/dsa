@@ -10,7 +10,7 @@ namespace SFT
             internal int Start;
             internal int End;
             internal readonly Dictionary<char, Node> Children = new Dictionary<char, Node>();
-            public Node SuffixLink;
+            internal Node SuffixLink;
             internal Node Parent;
 
             internal Node(int start = 0, int end = 0)
@@ -144,33 +144,40 @@ namespace SFT
             }
         }
 
+        public bool Contains(string s)
+        {
+            try
+            {
+                var n = _root.Children[s[0]];
+                for (int i = 0; i < s.Length; )
+                {
+                    var curNodeText = NodeText(n);
+                    foreach (var c in curNodeText)
+                    {
+                        if (c == s[i])
+                        {
+                            i++;
+                            if (i == s.Length)
+                                return true;
+                        }
+                        else
+                            return false;
+                    }
+                    n = n.Children[s[i]];
+                }
+
+                return false;
+            }
+            catch (KeyNotFoundException e)
+            {
+                return false;
+            }
+        }
+
         public void PrintTree()
         {
             Console.WriteLine($"Tree({_baseString}):");
             PrintNode(_root, 0);
-        }
-
-        public bool Contains(string s)
-        {
-            var n = _root.Children[s[0]];
-            for (int i = 0; i < s.Length; )
-            {
-                var curNodeText = NodeText(n);
-                foreach (var c in curNodeText)
-                {
-                    if (c == s[i])
-                    {
-                        i++;
-                        if (i == s.Length)
-                            return true;
-                    }
-                    else
-                        return false;
-                }
-                n = n.Children[s[i]];
-            }
-
-            return false;
         }
     }
 }
