@@ -9,7 +9,6 @@ namespace SFT
             const string spacing = "-------------------------------------------------";
             var t = new SuffixTree(str);
             t.PrintTree();
-            t.PrintSuffixLinks();
             Console.WriteLine(t.Contains(str.Substring(0, 3)));
             // ReSharper disable once RedundantAssignment
             t = null;
@@ -20,7 +19,8 @@ namespace SFT
         {
             string[] strings = {"aaaabbbc", "test", "testing_the_suffix_tree"};
 
-            foreach (var s in strings) TestTree(s);
+            foreach (var s in strings) 
+                TestTree(s);
         }
     }
 }
