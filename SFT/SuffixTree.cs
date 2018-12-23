@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
+/*
+ * Suffix tree based on Ukkonen's algorithm
+ */
 namespace SFT
 {
     public class SuffixTree

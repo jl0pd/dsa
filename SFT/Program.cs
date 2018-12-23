@@ -8,22 +8,24 @@ namespace SFT
         private static void Main()
         {
             var strings = TestDict.Tokens();
-            foreach (var s in strings)
-            {
-                string lookupStr = s;
-                Console.WriteLine(s);
-                TimeIt(s, lookupStr);
-                Console.Write($"len: {s.Length}");
-                Console.WriteLine();
-                Console.WriteLine();
-            }
+//            var strings = new List<string>() {TestDict.TokensHard()};
+            var mainStr = TestDict.TokensHard();
+            TimeIt(mainStr, strings[0]);
         }
 
         private static void TimeIt(string s, string l)
         {
             var t = CalcCreate(s);
-            
-            CalcSearch(t, l);
+
+            var strings = TestDict.Tokens();
+            foreach (var str in strings)
+            {
+                Console.WriteLine(str);
+                CalcSearch(t, str);
+                Console.Write($"len: {str.Length}");
+                Console.WriteLine();
+                Console.WriteLine();
+            }
             // ReSharper disable once RedundantAssignment
             t = null;
         }
