@@ -170,7 +170,7 @@ namespace SFT
 
                 return false;
             }
-            catch (KeyNotFoundException e)
+            catch (KeyNotFoundException)
             {
                 return false;
             }

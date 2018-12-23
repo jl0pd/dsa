@@ -7,47 +7,29 @@ namespace SFT
     {
         private static void Main()
         {
-            var strings = TestDict.Tokens();
-//            var strings = new List<string>() {TestDict.TokensHard()};
             var mainStr = TestDict.TokensHard();
-            TimeIt(mainStr, strings[0]);
-        }
 
-        private static void TimeIt(string s, string l)
-        {
-            var t = CalcCreate(s);
-
-            var strings = TestDict.Tokens();
-            foreach (var str in strings)
+            var t = new SuffixTree(mainStr);
+            for (var i = 1; i < 500; i++)
             {
-                Console.WriteLine(str);
-                CalcSearch(t, str);
-                Console.Write($"len: {str.Length}");
-                Console.WriteLine();
-                Console.WriteLine();
+                var start = 0;
+                var str = mainStr.Substring(start, i);
+                
+                double elapsed = 0;
+                for (var j = 0; j < 1000; j++)
+                    elapsed += CalcSearch(t, str);
+                elapsed /= 1000;
+                Console.WriteLine($"{i}\t{elapsed}");
             }
-            // ReSharper disable once RedundantAssignment
-            t = null;
         }
 
-        private static SuffixTree CalcCreate(string str)
-        {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var t = new SuffixTree(str);
-            stopwatch.Stop();
-            Console.WriteLine($"create: {stopwatch.Elapsed.TotalMilliseconds}ms");
-            return t;
-        }
-
-        private static bool CalcSearch(SuffixTree t, string s)
+        private static double CalcSearch(SuffixTree t, string s)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var r = t.Contains(s);
             stopwatch.Stop();
-            Console.WriteLine($"search: {stopwatch.Elapsed.TotalMilliseconds}ms -> {r}");
-            return r;
+            return stopwatch.Elapsed.TotalMilliseconds;
         }
     }
 }
